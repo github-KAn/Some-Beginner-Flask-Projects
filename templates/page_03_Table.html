@@ -1,0 +1,11 @@
+<!DOCTYPE= html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',
+    filename='/css/style_table.css') }}">
+</head>
+    <h1>Table from DataFrame with CSS</h1>
+    {{table| safe}}
+</html>

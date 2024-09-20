@@ -19,6 +19,28 @@ def html_page():
 def loadAccount():
     account="Felix"
     return render_template("account.html", acc=account)
+@app.route("/welcome/<pname>")
+def welcome(pname):
+    return render_template("welcome2.html",acc=pname)
+@app.route("/loadPage01")
+def loadPage01():
+    lst=[0,1,2,3]
+    return render_template("page_01_for.html",seq=lst)
+@app.route("/loadPage03")
+def loadPage03():
+    import pandas as pd
+    data={
+        "Name":["John","Anna","Peter","Linda"],
+        "Age": [28,24,35,32],
+        "City":["New York","Paris","Berlin","London"]
+    }
+    df=pd.DataFrame(data)
+    html_data=df.to_html(classes='data', escape=False);
+    return render_template("page_03_Table.html",table=html_data)
+@app.route("/loadPage04")
+def loadPage04():
+    html_table=load_data()
+    return render_template()
 # chạy web
 if __name__== '__main__':
     print(__name__)
