@@ -1,5 +1,6 @@
 import flask
 from flask import Flask, render_template, request
+from pandas.core.interchange.dataframe_protocol import DataFrame
 
 # from flask.globals import app_ctx
 
@@ -37,10 +38,20 @@ def loadPage03():
     df=pd.DataFrame(data)
     html_data=df.to_html(classes='data', escape=False);
     return render_template("page_03_Table.html",table=html_data)
+def load_data():
+    import pandas as pd
+    df=pd.read_csv("gradedata.csv")
+    #chỉ hiện 5 bản ghi
+    html_table=df.iloc[:5].to_html(classes='data',escape=False)
+    return html_table
 @app.route("/loadPage04")
 def loadPage04():
     html_table=load_data()
-    return render_template()
+    print(html_table)
+    print(type(html_table))
+    return render_template('page_04_Table.html',
+                           tables=html_table,
+                           titles=html_table.columns.values)
 # chạy web
 if __name__== '__main__':
     print(__name__)
