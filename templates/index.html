@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<head>
+<body>
+    <h1>Data</h1>
+    <div class="menu">
+        <ul>
+        {% for row in table %}
+            <li>
+
+            {{row[0]}}
+            {{row[1]}}
+            {{row[2]}}
+
+            </li>
+        {% endfor %}
+    </ul>
+    </div>
+
+</body>
+</head>

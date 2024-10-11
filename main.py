@@ -2,17 +2,25 @@
 
 import flask
 from flask import Flask, render_template, request
+import sqlite3
 from pandas.core.interchange.dataframe_protocol import DataFrame
 
 # from flask.globals import app_ctx
 
 # Khởi tạo đối tượng app
 app: Flask=Flask(__name__,static_url_path='/static')
-
+sqldbname="db/website.db"
 # Định tuyến hàm gọi ở trang gốc
 @app.route("/")
 def index():
-    return render_template("search.html", search_text="")
+    conn=sqlite3.connect(sqldbname)
+    cursor=conn.cursor()
+    sqlcommand="SELECT * from STORAGES"
+    cursor.execute(sqlcommand)
+    data=cursor.fetchall()
+    conn.close()
+    return render_template("index.html",table=data)
+    # return render_template("search.html", search_text="")
 @app.route("/html")
 def html_page():
     html_=("<h1>hello</h1>"
@@ -56,6 +64,19 @@ def load_data(search_text:str):
         print(dfX)
     html_table=dfX.to_html(classes='data',escape=False)
     return html_table
+def load_data_from_db(search_text:str):
+    sqldbname="db/website.db"
+    if search_text !="":
+        conn=sqlite3.connect(sqldbname)
+        cursor=conn.cursor()
+        sqlcommand="SELECT * FROM STORAGES WHERE model like '%"+search_text+"%'"
+        sqlcommand=sqlcommand+ "or brand like '%"+search_text+"%'"
+        sqlcommand=sqlcommand+ "or detail like '%" +search_text+"%'"
+        cursor.execute(sqlcommand)
+        data=cursor.fetchall()
+        conn.close()
+        return data
+
 
 # @app.route("/loadPage04")
 # def loadPage04():
@@ -68,10 +89,10 @@ def load_data(search_text:str):
 @app.route("/search",methods=['POST'])
 def search():
     search_text=request.form['searchInput']
-    html_table=load_data(search_text)
+    html_table=load_data_from_db(search_text)
     return render_template("search.html",
                            search_text=search_text,table=html_table)
 # chạy web
 if __name__== '__main__':
     print(__name__)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000,debug=True)
