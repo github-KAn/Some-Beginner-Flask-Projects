@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+    <title>search example with flask</title>
+</head>
+<body>
+    <h1>search example with flask</h1>
+    <form method="POST" action="/searchData">
+        <input type="text" name="searchInput"
+            placeholder="Enter your search term">
+        <button type="submit">Search</button>
+    </form>
+<!--    hiển dữ liệu nếu search_text không rỗng-->
+    <p>
+        {% if search_text %}
+        You searched for: {{search_text}}
+        <div class="menu">
+        <ul>
+            {% for row in table %}
+            <li>
+
+            {{row[0]}}
+            {{row[1]}}
+            {{row[2]}}
+                {{row[3]}}
+            {{row[4]}}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+        {{table |safe}}
+        {% endif %}
+    </p>
+</body>

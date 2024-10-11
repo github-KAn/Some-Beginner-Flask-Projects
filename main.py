@@ -19,8 +19,8 @@ def index():
     cursor.execute(sqlcommand)
     data=cursor.fetchall()
     conn.close()
-    return render_template("index.html",table=data)
-    # return render_template("search.html", search_text="")
+    # return render_template("index.html",table=data)
+    return render_template("searchWithCssDataDB.html", search_text="")
 @app.route("/html")
 def html_page():
     html_=("<h1>hello</h1>"
@@ -71,7 +71,7 @@ def load_data_from_db(search_text:str):
         cursor=conn.cursor()
         sqlcommand="SELECT * FROM STORAGES WHERE model like '%"+search_text+"%'"
         sqlcommand=sqlcommand+ "or brand like '%"+search_text+"%'"
-        sqlcommand=sqlcommand+ "or detail like '%" +search_text+"%'"
+        sqlcommand=sqlcommand+ "or details like '%" +search_text+"%'"
         cursor.execute(sqlcommand)
         data=cursor.fetchall()
         conn.close()
@@ -89,8 +89,16 @@ def load_data_from_db(search_text:str):
 @app.route("/search",methods=['POST'])
 def search():
     search_text=request.form['searchInput']
-    html_table=load_data_from_db(search_text)
+    html_table=load_data(search_text)
     return render_template("search.html",
+                           search_text=search_text,table=html_table)
+@app.route("/searchData",methods=['POST'])
+def searchData():
+    search_text=request.form['searchInput']
+    html_table=load_data_from_db(search_text)
+    print(search_text)
+    print(html_table)
+    return render_template("searchWithCssDataDB.html",
                            search_text=search_text,table=html_table)
 # chạy web
 if __name__== '__main__':
