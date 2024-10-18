@@ -2,7 +2,7 @@
 
 
 import flask
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session
 import sqlite3
 from pandas.core.interchange.dataframe_protocol import DataFrame
 
@@ -22,7 +22,7 @@ def index():
     cursor.execute(sqlcommand)
     data=cursor.fetchall()
     conn.close()
-    return render_template("searchWithCssDataDBAddToCartTable.html", search_text="")
+    return render_template("searchWithCssDataDB.html", search_text="")
 def load_data(search_text:str):
     import pandas as pd
     df=pd.read_csv('gradedata.csv')
@@ -49,16 +49,19 @@ def load_data_from_db(search_text:str):
 @app.route("/search",methods=['POST'])
 def search():
     search_text=request.form["searchInput"]
-    products=load_data(search_text)
+    html_table=load_data(search_text)
+    print(type(html_table))
     return render_template("search.html",
-                           search_text=search_text,products=products)
+                           search_text=search_text,table=html_table)
 @app.route("/searchData",methods=['POST'])
 def searchData():
     search_text=request.form["searchInput"]
-    products=load_data_from_db(search_text)
+    html_table=load_data_from_db(search_text)
+    print(type(html_table))
+
     print(search_text)
-    return render_template("searchWithCssDataDBAddToCartTable.html",
-                           search_text=search_text,products=products)
+    return render_template("searchWithCssDataDB.html",
+                           search_text=search_text,table=html_table)
 
 @app.route("/cart/add",methods=['POST'])
 def add_to_cart():
@@ -108,41 +111,7 @@ def add_to_cart():
                    f'</br>View Shopping Cart! <a href="/view_cart">ViewCart</a>')
     #reutrn a success message
     return outputmessage
-@app.route("/viewcart", methods=["POST"])
-def viewcart():
-    # get the cart from the session or create an empty list
-    # render the cart.html template and pass the cart
-    current_cart= []
-    if "cart" in session:
-        current_cart=session.get("cart",[])
-        return render_template("cart.html",carts=current_cart)
-@app.route("/view_cart")
-def view_cart():
-    # get the cart from the session or create an empty list
-    # render the cart.html template and pass the cart
-    current_cart= []
-    if "cart" in session:
-        current_cart=session.get("cart",[])
-        return render_template("cart_update.html",carts=current_cart)
-@app.route("/update_cart", methods=["POST"])
-def update_cart():
-    cart=session.get('cart',[])
-    new_cart=[]
-    for product in cart:
-        product_id=str(product['id'])
-
-        if f'quantity --product_id' in request.form:
-            quantity= int(request.form[f'quantity--{product_id}'])
-            #if the quantity is 0 or this is a delete field skip this product
-            if quantity== 0 or f'delete--{product_id}' in request.form:
-                continue
-            #Otherwise, upate the quantity of the prodcut
-            product['quantity']=quantity
-        new_cart.append(product)
-
-    session['cart']=new_cart
-    return redirect(url_for('view_cart'))
-# chạy web
+    # chạy web
 if __name__== '__main__':
     print(__name__)
     app.run(host='0.0.0.0', port=5000,debug=True)
