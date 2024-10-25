@@ -25,8 +25,11 @@ def add():
         user_name=request.form.get("name")
         user_email=request.form.get("email")
         user_password= request.form.get("password")
-        if user_name and user_email and user_password;
-            response=request.post(base_url)
+        if user_name and user_email and user_password:
+            response=requests.post(base_url,json={"name":user_name, "email":user_email, "password":user_password})
+            if response.status_code== 200:
+                user= response.json()
+                flash(f'User {user["id"]} added successfully')
 
 
 # app.route("/user",methods=["POST"])
