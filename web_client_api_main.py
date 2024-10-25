@@ -30,7 +30,19 @@ def add():
             if response.status_code== 200:
                 user= response.json()
                 flash(f'User {user["id"]} added successfully')
-
+                return redirect("/")
+            else:
+                flash("something went wrong please try again later")
+                return render_template("users/add.html")
+        else:
+            flash("User name, email and passwords are required")
+            return render_template("user/add.html")
+    else:
+        return  render_template("user/add.html")
+@app.route("/edit/<int:id>", methods=["GET","POST"])
+def edit(id):
+    if request.method == "POST":
+        user_name=request.form.get("name")
 
 # app.route("/user",methods=["POST"])
 # def get_users():
