@@ -1,6 +1,8 @@
+from http.client import responses
+
 from flask import Flask, request, jsonify, render_template,request,redirect,flash
 import requests
-
+# test
 #Create a flask app
 app=Flask(__name__)
 app.secret_key="FelixPham"
@@ -43,7 +45,11 @@ def add():
 def edit(id):
     if request.method == "POST":
         user_name=request.form.get("name")
-
+        user_email=request.form.get("email")
+        user_password=request.form.get("password")
+        if user_name and user_email and user_password:
+            response=requests.put(f"{base_url}/{id}",
+                                  json={"name":user_name,"email":user_email,"password":user_password})
 # app.route("/user",methods=["POST"])
 # def get_users():
 #run the app
